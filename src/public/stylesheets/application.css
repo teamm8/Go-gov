@@ -1,0 +1,28 @@
+/* Custom styles for Go-gov application */
+
+/* Ensure proper spacing */
+body {
+  margin: 0;
+  padding: 0;
+}
+
+/* Custom utility classes */
+.text-center {
+  text-align: center;
+}
+
+/* Make Microsoft button look like GOV.UK secondary button */
+.govuk-button--secondary {
+  background-color: #f3f2f1;
+  color: #0b0c0c;
+  box-shadow: 0 2px 0 #929191;
+}
+
+.govuk-button--secondary:hover {
+  background-color: #dbdad9;
+}
+
+/* Ensure links in buttons don't have underlines */
+.govuk-button {
+  text-decoration: none;
+}

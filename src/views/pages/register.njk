@@ -1,0 +1,140 @@
+{% extends "layouts/base.njk" %}
+
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
+
+{% block beforeContent %}
+  {{ govukBreadcrumbs({
+    items: [
+      {
+        text: "Home",
+        href: "/"
+      },
+      {
+        text: "Create an account"
+      }
+    ]
+  }) }}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-xl">Create an account</h1>
+
+      {% if errors.length > 0 %}
+        {{ govukErrorSummary({
+          titleText: "There is a problem",
+          errorList: errors | map(error => { text: error.msg, href: "#" })
+        }) }}
+      {% endif %}
+
+      <form method="POST" action="/auth/register" novalidate>
+        {{ govukInput({
+          label: {
+            text: "Full name",
+            classes: "govuk-label--m"
+          },
+          hint: {
+            text: "Enter your full name as it appears on official documents"
+          },
+          id: "name",
+          name: "name",
+          type: "text",
+          autocomplete: "name",
+          value: name if name else "",
+          errorMessage: {
+            text: errors | selectattr("param", "equalto", "name") | map(attribute="msg") | first
+          } if errors | selectattr("param", "equalto", "name") | list | length > 0 else undefined
+        }) }}
+
+        {{ govukInput({
+          label: {
+            text: "Email address",
+            classes: "govuk-label--m"
+          },
+          hint: {
+            text: "Use your government email address"
+          },
+          id: "email",
+          name: "email",
+          type: "email",
+          autocomplete: "email",
+          spellcheck: false,
+          value: email if email else "",
+          errorMessage: {
+            text: errors | selectattr("param", "equalto", "email") | map(attribute="msg") | first
+          } if errors | selectattr("param", "equalto", "email") | list | length > 0 else undefined
+        }) }}
+
+        {{ govukInput({
+          label: {
+            text: "Department (optional)",
+            classes: "govuk-label--m"
+          },
+          hint: {
+            text: "e.g., Department for Education, Home Office"
+          },
+          id: "department",
+          name: "department",
+          type: "text",
+          value: department if department else ""
+        }) }}
+
+        {{ govukInput({
+          label: {
+            text: "Password",
+            classes: "govuk-label--m"
+          },
+          hint: {
+            text: "Must be at least 8 characters, include a number and an uppercase letter"
+          },
+          id: "password",
+          name: "password",
+          type: "password",
+          autocomplete: "new-password",
+          errorMessage: {
+            text: errors | selectattr("param", "equalto", "password") | map(attribute="msg") | first
+          } if errors | selectattr("param", "equalto", "password") | list | length > 0 else undefined
+        }) }}
+
+        {{ govukInput({
+          label: {
+            text: "Confirm password",
+            classes: "govuk-label--m"
+          },
+          id: "confirmPassword",
+          name: "confirmPassword",
+          type: "password",
+          autocomplete: "new-password",
+          errorMessage: {
+            text: errors | selectattr("param", "equalto", "confirmPassword") | map(attribute="msg") | first
+          } if errors | selectattr("param", "equalto", "confirmPassword") | list | length > 0 else undefined
+        }) }}
+
+        {{ govukButton({
+          text: "Create account",
+          type: "submit"
+        }) }}
+      </form>
+
+      <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+
+      <h2 class="govuk-heading-m">Or sign up with</h2>
+
+      <p class="govuk-body">
+        <a href="/auth/microsoft" class="govuk-button govuk-button--secondary" style="text-decoration: none;">
+          Sign up with Microsoft
+        </a>
+      </p>
+
+      <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+
+      <p class="govuk-body">
+        Already have an account? <a href="/auth/login" class="govuk-link">Sign in</a>
+      </p>
+    </div>
+  </div>
+{% endblock %}

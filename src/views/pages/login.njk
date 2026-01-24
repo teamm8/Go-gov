@@ -1,0 +1,91 @@
+{% extends "layouts/base.njk" %}
+
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
+
+{% block beforeContent %}
+  {{ govukBreadcrumbs({
+    items: [
+      {
+        text: "Home",
+        href: "/"
+      },
+      {
+        text: "Sign in"
+      }
+    ]
+  }) }}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-xl">Sign in to Go-gov</h1>
+
+      {% if errors.length > 0 %}
+        {{ govukErrorSummary({
+          titleText: "There is a problem",
+          errorList: errors | map(error => { text: error.msg, href: "#" })
+        }) }}
+      {% endif %}
+
+      <form method="POST" action="/auth/login" novalidate>
+        {{ govukInput({
+          label: {
+            text: "Email address",
+            classes: "govuk-label--m"
+          },
+          hint: {
+            text: "Enter your government email address"
+          },
+          id: "email",
+          name: "email",
+          type: "email",
+          autocomplete: "email",
+          spellcheck: false,
+          value: email if email else "",
+          errorMessage: {
+            text: errors | selectattr("param", "equalto", "email") | map(attribute="msg") | first
+          } if errors | selectattr("param", "equalto", "email") | list | length > 0 else undefined
+        }) }}
+
+        {{ govukInput({
+          label: {
+            text: "Password",
+            classes: "govuk-label--m"
+          },
+          id: "password",
+          name: "password",
+          type: "password",
+          autocomplete: "current-password",
+          errorMessage: {
+            text: errors | selectattr("param", "equalto", "password") | map(attribute="msg") | first
+          } if errors | selectattr("param", "equalto", "password") | list | length > 0 else undefined
+        }) }}
+
+        {{ govukButton({
+          text: "Sign in",
+          type: "submit"
+        }) }}
+      </form>
+
+      <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+
+      <h2 class="govuk-heading-m">Or sign in with</h2>
+
+      <p class="govuk-body">
+        <a href="/auth/microsoft" class="govuk-button govuk-button--secondary" style="text-decoration: none;">
+          Sign in with Microsoft
+        </a>
+      </p>
+
+      <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+
+      <p class="govuk-body">
+        Don't have an account? <a href="/auth/register" class="govuk-link">Create an account</a>
+      </p>
+    </div>
+  </div>
+{% endblock %}

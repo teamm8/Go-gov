@@ -1,0 +1,95 @@
+{% extends "layouts/base.njk" %}
+
+{% from "govuk/components/panel/macro.njk" import govukPanel %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
+
+{% block beforeContent %}
+  {{ govukBreadcrumbs({
+    items: [
+      {
+        text: "Home",
+        href: "/"
+      },
+      {
+        text: "Dashboard"
+      }
+    ]
+  }) }}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      <h1 class="govuk-heading-xl">
+        Welcome, {{ user.name }}
+      </h1>
+
+      {{ govukPanel({
+        titleText: "Your dashboard",
+        html: "You are successfully signed in to Go-gov"
+      }) }}
+
+      <p class="govuk-body">
+        This is your personal dashboard where you'll be able to manage your bookmarks, discover resources shared by your colleagues, and contribute to the community knowledge base.
+      </p>
+
+      <div class="govuk-inset-text">
+        Bookmark functionality is coming soon! We're building this feature to help you save and organize useful resources.
+      </div>
+
+      <h2 class="govuk-heading-l govuk-!-margin-top-6">Your account details</h2>
+
+      <dl class="govuk-summary-list">
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Name
+          </dt>
+          <dd class="govuk-summary-list__value">
+            {{ user.name }}
+          </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Email
+          </dt>
+          <dd class="govuk-summary-list__value">
+            {{ user.email }}
+          </dd>
+        </div>
+        {% if user.department %}
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Department
+          </dt>
+          <dd class="govuk-summary-list__value">
+            {{ user.department }}
+          </dd>
+        </div>
+        {% endif %}
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Role
+          </dt>
+          <dd class="govuk-summary-list__value">
+            {{ user.role | capitalize }}
+          </dd>
+        </div>
+      </dl>
+
+      <h2 class="govuk-heading-l govuk-!-margin-top-6">Quick actions</h2>
+
+      <ul class="govuk-list">
+        <li>
+          <a href="#" class="govuk-link">Add a bookmark</a> (coming soon)
+        </li>
+        <li>
+          <a href="#" class="govuk-link">Browse community bookmarks</a> (coming soon)
+        </li>
+        <li>
+          <a href="#" class="govuk-link">Manage tags</a> (coming soon)
+        </li>
+      </ul>
+    </div>
+  </div>
+{% endblock %}

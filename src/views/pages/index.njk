@@ -1,0 +1,92 @@
+{% extends "layouts/base.njk" %}
+
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/panel/macro.njk" import govukPanel %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-xl">
+        Share and discover resources with your department
+      </h1>
+
+      <p class="govuk-body-l">
+        Go-gov is a community-driven bookmarking platform designed for UK government departments to increase productivity through knowledge sharing.
+      </p>
+
+      <p class="govuk-body">
+        Collaborate with your colleagues to:
+      </p>
+
+      <ul class="govuk-list govuk-list--bullet">
+        <li>Share useful resources and tools</li>
+        <li>Discover what others in your department are using</li>
+        <li>Organize bookmarks with tags and categories</li>
+        <li>Build a community knowledge base</li>
+      </ul>
+
+      <div class="govuk-button-group">
+        {% if isAuthenticated %}
+          {{ govukButton({
+            text: "Go to Dashboard",
+            href: "/dashboard",
+            isStartButton: true
+          }) }}
+        {% else %}
+          {{ govukButton({
+            text: "Create an account",
+            href: "/auth/register",
+            isStartButton: true
+          }) }}
+
+          <a class="govuk-link" href="/auth/login">Sign in to your account</a>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="govuk-grid-column-one-third">
+      <aside class="govuk-!-padding-4" style="background-color: #f3f2f1; border-left: 4px solid #1d70b8;">
+        <h2 class="govuk-heading-m">Secure and compliant</h2>
+        <p class="govuk-body-s">
+          Built with UK government security standards and WCAG 2.1 Level AA accessibility compliance.
+        </p>
+
+        <h2 class="govuk-heading-m govuk-!-margin-top-4">Sign in options</h2>
+        <p class="govuk-body-s">
+          Use your email and password, or sign in with your Microsoft account.
+        </p>
+      </aside>
+    </div>
+  </div>
+
+  <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      <h2 class="govuk-heading-l">Features</h2>
+    </div>
+  </div>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-third">
+      <h3 class="govuk-heading-m">Community-driven</h3>
+      <p class="govuk-body">
+        Share bookmarks with your department and discover what resources your colleagues find valuable.
+      </p>
+    </div>
+
+    <div class="govuk-grid-column-one-third">
+      <h3 class="govuk-heading-m">Organized</h3>
+      <p class="govuk-body">
+        Tag and categorize bookmarks for easy discovery and retrieval. Find what you need quickly.
+      </p>
+    </div>
+
+    <div class="govuk-grid-column-one-third">
+      <h3 class="govuk-heading-m">Secure</h3>
+      <p class="govuk-body">
+        Built with government-grade security standards. Your data is protected and compliant.
+      </p>
+    </div>
+  </div>
+{% endblock %}

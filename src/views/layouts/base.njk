@@ -1,0 +1,104 @@
+{% from "govuk/components/header/macro.njk" import govukHeader %}
+{% from "govuk/components/footer/macro.njk" import govukFooter %}
+{% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
+
+<!DOCTYPE html>
+<html lang="en" class="govuk-template">
+<head>
+  <meta charset="utf-8">
+  <title>{% block pageTitle %}{{ pageTitle }}{% endblock %} - Go-gov</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b0c0c">
+
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <link rel="shortcut icon" sizes="16x16 32x32 48x48" href="/assets/images/favicon.ico" type="image/x-icon">
+  <link rel="mask-icon" href="/assets/images/govuk-mask-icon.svg" color="#0b0c0c">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/images/govuk-apple-touch-icon-180x180.png">
+  <link rel="apple-touch-icon" sizes="167x167" href="/assets/images/govuk-apple-touch-icon-167x167.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/assets/images/govuk-apple-touch-icon-152x152.png">
+  <link rel="apple-touch-icon" href="/assets/images/govuk-apple-touch-icon.png">
+
+  <link href="/assets/govuk-frontend.min.css" rel="stylesheet">
+  <link href="/stylesheets/application.css" rel="stylesheet">
+
+  {% block head %}{% endblock %}
+</head>
+
+<body class="govuk-template__body">
+  <script>document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');</script>
+
+  <a href="#main-content" class="govuk-skip-link" data-module="govuk-skip-link">Skip to main content</a>
+
+  {{ govukHeader({
+    homepageUrl: "/",
+    serviceName: "Go-gov",
+    serviceUrl: "/",
+    navigation: [
+      {
+        href: "/",
+        text: "Home",
+        active: true if pageTitle == "Go-gov - Community Bookmarking for Government" else false
+      },
+      {
+        href: "/dashboard" if isAuthenticated else "/auth/login",
+        text: "Dashboard" if isAuthenticated else "Sign in"
+      }
+    ] if not isAuthenticated else [
+      {
+        href: "/",
+        text: "Home"
+      },
+      {
+        href: "/dashboard",
+        text: "Dashboard"
+      },
+      {
+        href: "/auth/logout",
+        text: "Sign out"
+      }
+    ]
+  }) }}
+
+  <div class="govuk-width-container">
+    {{ govukPhaseBanner({
+      tag: {
+        text: "alpha"
+      },
+      html: 'This is a new service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.'
+    }) }}
+
+    {% block beforeContent %}{% endblock %}
+
+    <main class="govuk-main-wrapper" id="main-content" role="main">
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+
+  {{ govukFooter({
+    meta: {
+      items: [
+        {
+          href: "#",
+          text: "Privacy"
+        },
+        {
+          href: "#",
+          text: "Cookies"
+        },
+        {
+          href: "#",
+          text: "Accessibility"
+        }
+      ]
+    }
+  }) }}
+
+  <script src="/assets/govuk-frontend.min.js"></script>
+  <script>
+    window.GOVUKFrontend.initAll();
+  </script>
+
+  {% block scripts %}{% endblock %}
+</body>
+</html>
