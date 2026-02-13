@@ -19,7 +19,7 @@
   <link rel="apple-touch-icon" sizes="152x152" href="/assets/images/govuk-apple-touch-icon-152x152.png">
   <link rel="apple-touch-icon" href="/assets/images/govuk-apple-touch-icon.png">
 
-  <link href="/assets/govuk-frontend.min.css" rel="stylesheet">
+  <link href="/govuk/govuk-frontend.min.css" rel="stylesheet">
   <link href="/stylesheets/application.css" rel="stylesheet">
 
   {% block head %}{% endblock %}
@@ -34,30 +34,43 @@
     homepageUrl: "/",
     serviceName: "Go-gov",
     serviceUrl: "/",
-    navigation: [
-      {
-        href: "/",
-        text: "Home",
-        active: true if pageTitle == "Go-gov - Community Bookmarking for Government" else false
-      },
-      {
-        href: "/dashboard" if isAuthenticated else "/auth/login",
-        text: "Dashboard" if isAuthenticated else "Sign in"
-      }
-    ] if not isAuthenticated else [
-      {
-        href: "/",
-        text: "Home"
-      },
-      {
-        href: "/dashboard",
-        text: "Dashboard"
-      },
-      {
-        href: "/auth/logout",
-        text: "Sign out"
-      }
-    ]
+    navigation: (
+      [
+        {
+          href: "/",
+          text: "Home"
+        },
+        {
+          href: "/bookmarks",
+          text: "Browse"
+        },
+        {
+          href: "/auth/login",
+          text: "Sign in"
+        }
+      ] if not isAuthenticated else [
+        {
+          href: "/",
+          text: "Home"
+        },
+        {
+          href: "/bookmarks",
+          text: "Browse"
+        },
+        {
+          href: "/bookmarks/new",
+          text: "Create"
+        },
+        {
+          href: "/dashboard",
+          text: "Dashboard"
+        },
+        {
+          href: "/auth/logout",
+          text: "Sign out"
+        }
+      ]
+    )
   }) }}
 
   <div class="govuk-width-container">
@@ -94,7 +107,7 @@
     }
   }) }}
 
-  <script src="/assets/govuk-frontend.min.js"></script>
+  <script src="/govuk/govuk-frontend.min.js"></script>
   <script>
     window.GOVUKFrontend.initAll();
   </script>

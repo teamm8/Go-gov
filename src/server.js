@@ -88,6 +88,7 @@ app.set('view engine', 'njk');
 app.set('views', path.join(__dirname, 'views'));
 
 // Static files
+app.use('/govuk', express.static(path.join(__dirname, '../node_modules/govuk-frontend/dist/govuk')));
 app.use('/assets', express.static(path.join(__dirname, '../node_modules/govuk-frontend/dist/govuk/assets')));
 app.use('/public', express.static(path.join(__dirname, 'public')));
 app.use('/stylesheets', express.static(path.join(__dirname, 'public/stylesheets')));
