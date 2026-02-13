@@ -1,0 +1,91 @@
+{% extends "layouts/base.njk" %}
+
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      <h1 class="govuk-heading-xl">All Go Links</h1>
+
+      {% if isAuthenticated %}
+        {{ govukButton({
+          text: "Create new go link",
+          href: "/bookmarks/new",
+          classes: "govuk-!-margin-bottom-6"
+        }) }}
+      {% endif %}
+
+      {# Search box #}
+      <div class="govuk-form-group govuk-!-margin-bottom-6">
+        <label class="govuk/label" for="search">
+          Search go links
+        </label>
+        <input
+          class="govuk-input govuk-input--width-20"
+          id="search"
+          name="search"
+          type="text"
+          placeholder="Filter by keyword or description">
+      </div>
+
+      {% if bookmarks.length > 0 %}
+        <table class="govuk-table">
+          <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+              <th scope="col" class="govuk-table__header">Keyword</th>
+              <th scope="col" class="govuk-table__header">URL</th>
+              <th scope="col" class="govuk-table__header">Description</th>
+              <th scope="col" class="govuk-table__header govuk-table__header--numeric">Uses</th>
+              <th scope="col" class="govuk-table__header">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="govuk-table__body">
+            {% for bookmark in bookmarks %}
+              <tr class="govuk-table__row">
+                <th scope="row" class="govuk-table__header">
+                  <a href="/bookmarks/{{ bookmark.id }}" class="govuk-link">
+                    <strong>{{ bookmark.keyword }}</strong>
+                  </a>
+                </th>
+                <td class="govuk-table__cell">
+                  <a href="{{ bookmark.url }}" class="govuk-link" target="_blank" rel="noopener noreferrer">
+                    {{ bookmark.url | truncate(50) }}
+                  </a>
+                </td>
+                <td class="govuk-table__cell">
+                  {{ bookmark.description | truncate(100) }}
+                </td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  {{ bookmark.usage_count }}
+                </td>
+                <td class="govuk-table__cell">
+                  <a href="/go/{{ bookmark.keyword | urlencode }}" class="govuk-link">Try it</a>
+                  |
+                  <a href="/bookmarks/{{ bookmark.id }}" class="govuk-link">View</a>
+                  {% if isAuthenticated %}
+                    |
+                    <a href="/bookmarks/{{ bookmark.id }}/edit" class="govuk-link">Edit</a>
+                  {% endif %}
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+        <p class="govuk-body-s">
+          Showing {{ bookmarks.length }} go link{{ "s" if bookmarks.length != 1 else "" }}
+        </p>
+      {% else %}
+        <p class="govuk-body">No go links found.</p>
+
+        {% if isAuthenticated %}
+          <p class="govuk-body">
+            <a href="/bookmarks/new" class="govuk-link">Create the first go link</a>
+          </p>
+        {% endif %}
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}

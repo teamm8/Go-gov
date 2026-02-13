@@ -1,0 +1,93 @@
+{% extends "layouts/base.njk" %}
+
+{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
+
+{% block beforeContent %}
+  {{ govukBreadcrumbs({
+    items: [
+      {
+        text: "Home",
+        href: "/"
+      },
+      {
+        text: "All go links",
+        href: "/bookmarks"
+      },
+      {
+        text: bookmark.keyword,
+        href: "/bookmarks/" + bookmark.id
+      },
+      {
+        text: "History"
+      }
+    ]
+  }) }}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      <h1 class="govuk-heading-xl">
+        Edit History: {{ bookmark.keyword }}
+      </h1>
+
+      <p class="govuk-body">
+        <a href="/bookmarks/{{ bookmark.id }}" class="govuk-link">Back to go link</a>
+      </p>
+
+      {% if history.length > 0 %}
+        <table class="govuk-table">
+          <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+              <th scope="col" class="govuk-table__header">Date</th>
+              <th scope="col" class="govuk-table__header">Action</th>
+              <th scope="col" class="govuk-table__header">Keyword</th>
+              <th scope="col" class="govuk-table__header">URL</th>
+              <th scope="col" class="govuk-table__header">Description</th>
+              <th scope="col" class="govuk-table__header">Edited by</th>
+            </tr>
+          </thead>
+          <tbody class="govuk-table__body">
+            {% for entry in history %}
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">
+                  {{ entry.edited_at | date("DD/MM/YYYY HH:mm") if entry.edited_at else "Unknown" }}
+                </td>
+                <td class="govuk-table__cell">
+                  {% if entry.change_type == 'created' %}
+                    <strong class="govuk-tag govuk-tag--green">Created</strong>
+                  {% elif entry.change_type == 'updated' %}
+                    <strong class="govuk-tag govuk-tag--blue">Updated</strong>
+                  {% elif entry.change_type == 'deleted' %}
+                    <strong class="govuk-tag govuk-tag--red">Deleted</strong>
+                  {% else %}
+                    <strong class="govuk-tag">{{ entry.change_type }}</strong>
+                  {% endif %}
+                </td>
+                <td class="govuk-table__cell">
+                  <code>{{ entry.keyword }}</code>
+                </td>
+                <td class="govuk-table__cell">
+                  {{ entry.url | truncate(40) }}
+                </td>
+                <td class="govuk-table__cell">
+                  {{ entry.description | truncate(50) if entry.description else "-" }}
+                </td>
+                <td class="govuk-table__cell">
+                  {{ entry.edited_by_name if entry.edited_by_name else "Unknown" }}
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+        <p class="govuk-body-s">
+          Showing {{ history.length }} edit{{ "s" if history.length != 1 else "" }}
+        </p>
+      {% else %}
+        <p class="govuk-body">No edit history available.</p>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}

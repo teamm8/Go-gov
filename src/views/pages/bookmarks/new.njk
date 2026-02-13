@@ -1,0 +1,140 @@
+{% extends "layouts/base.njk" %}
+
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/textarea/macro.njk" import govukTextarea %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+
+{% block beforeContent %}
+  {{ govukBreadcrumbs({
+    items: [
+      {
+        text: "Home",
+        href: "/"
+      },
+      {
+        text: "All go links",
+        href: "/bookmarks"
+      },
+      {
+        text: "Create new"
+      }
+    ]
+  }) }}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-xl">Create Go Link</h1>
+
+      {% if errors.length > 0 %}
+        {{ govukErrorSummary({
+          titleText: "There is a problem",
+          errorList: errors | map(error => { text: error.msg, href: "#" })
+        }) }}
+      {% endif %}
+
+      <form method="POST" action="/bookmarks" novalidate>
+        {{ govukInput({
+          label: {
+            text: "Keyword",
+            classes: "govuk-label--m"
+          },
+          hint: {
+            text: "The shortcut you'll type (e.g., 'google', 'github', 'office 365')"
+          },
+          id: "keyword",
+          name: "keyword",
+          type: "text",
+          value: keyword if keyword else "",
+          errorMessage: {
+            text: errors | selectattr("param", "equalto", "keyword") | map(attribute="msg") | first
+          } if errors | selectattr("param", "equalto", "keyword") | list | length > 0 else undefined
+        }) }}
+
+        {{ govukInput({
+          label: {
+            text: "URL",
+            classes: "govuk-label--m"
+          },
+          hint: {
+            text: "The web address to redirect to (must start with http:// or https://)"
+          },
+          id: "url",
+          name: "url",
+          type: "url",
+          value: url if url else "",
+          errorMessage: {
+            text: errors | selectattr("param", "equalto", "url") | map(attribute="msg") | first
+          } if errors | selectattr("param", "equalto", "url") | list | length > 0 else undefined
+        }) }}
+
+        {{ govukTextarea({
+          label: {
+            text: "Description (optional)",
+            classes: "govuk-label--m"
+          },
+          hint: {
+            text: "Help others understand what this go link is for"
+          },
+          id: "description",
+          name: "description",
+          rows: 3,
+          value: description if description else ""
+        }) }}
+
+        {{ govukInsetText({
+          html: '<strong>Advanced:</strong> Search template'
+        }) }}
+
+        {{ govukInput({
+          label: {
+            text: "Search template (optional)",
+            classes: "govuk-label--s"
+          },
+          hint: {
+            html: 'Enable site search with the <code>?</code> operator. Use <code>{query}</code> as placeholder.<br>Example: <code>https://google.com/search?q={query}</code><br>Then use: <code>go google?search term</code>'
+          },
+          id: "searchTemplate",
+          name: "searchTemplate",
+          type: "url",
+          value: searchTemplate if searchTemplate else ""
+        }) }}
+
+        <div class="govuk-button-group">
+          {{ govukButton({
+            text: "Create go link",
+            type: "submit"
+          }) }}
+
+          <a href="/bookmarks" class="govuk-link">Cancel</a>
+        </div>
+      </form>
+
+      <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+
+      <h2 class="govuk-heading-m">Tips</h2>
+
+      <p class="govuk-body">
+        <strong>Using operators:</strong>
+      </p>
+
+      <ul class="govuk-list govuk-list--bullet">
+        <li><code>go keyword?query</code> - Search within the site (requires search template)</li>
+        <li><code>go keyword/path</code> - Append a path to the URL</li>
+      </ul>
+
+      <p class="govuk-body-s">
+        Example: If you create a go link for GitHub with keyword "github" and URL "https://github.com", then:
+      </p>
+
+      <ul class="govuk-list govuk-list--bullet govuk-body-s">
+        <li><code>go github</code> → https://github.com</li>
+        <li><code>go github/teamm8/Go-gov</code> → https://github.com/teamm8/Go-gov</li>
+      </ul>
+    </div>
+  </div>
+{% endblock %}

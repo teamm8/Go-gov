@@ -11,6 +11,10 @@ body {
   text-align: center;
 }
 
+.govuk-!-text-align-centre {
+  text-align: center !important;
+}
+
 /* Make Microsoft button look like GOV.UK secondary button */
 .govuk-button--secondary {
   background-color: #f3f2f1;

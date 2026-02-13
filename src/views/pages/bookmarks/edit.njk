@@ -1,0 +1,123 @@
+{% extends "layouts/base.njk" %}
+
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/textarea/macro.njk" import govukTextarea %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+
+{% block beforeContent %}
+  {{ govukBreadcrumbs({
+    items: [
+      {
+        text: "Home",
+        href: "/"
+      },
+      {
+        text: "All go links",
+        href: "/bookmarks"
+      },
+      {
+        text: bookmark.keyword,
+        href: "/bookmarks/" + bookmark.id
+      },
+      {
+        text: "Edit"
+      }
+    ]
+  }) }}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-xl">Edit: {{ bookmark.keyword }}</h1>
+
+      {% if errors.length > 0 %}
+        {{ govukErrorSummary({
+          titleText: "There is a problem",
+          errorList: errors | map(error => { text: error.msg, href: "#" })
+        }) }}
+      {% endif %}
+
+      {{ govukWarningText({
+        text: "All changes are tracked in the edit history.",
+        iconFallbackText: "Warning"
+      }) }}
+
+      <form method="POST" action="/bookmarks/{{ bookmark.id }}" novalidate>
+        {{ govukInput({
+          label: {
+            text: "Keyword",
+            classes: "govuk-label--m"
+          },
+          hint: {
+            text: "Changing the keyword will create a new shortcut"
+          },
+          id: "keyword",
+          name: "keyword",
+          type: "text",
+          value: bookmark.keyword,
+          errorMessage: {
+            text: errors | selectattr("param", "equalto", "keyword") | map(attribute="msg") | first
+          } if errors | selectattr("param", "equalto", "keyword") | list | length > 0 else undefined
+        }) }}
+
+        {{ govukInput({
+          label: {
+            text: "URL",
+            classes: "govuk-label--m"
+          },
+          id: "url",
+          name: "url",
+          type: "url",
+          value: bookmark.url,
+          errorMessage: {
+            text: errors | selectattr("param", "equalto", "url") | map(attribute="msg") | first
+          } if errors | selectattr("param", "equalto", "url") | list | length > 0 else undefined
+        }) }}
+
+        {{ govukTextarea({
+          label: {
+            text: "Description",
+            classes: "govuk-label--m"
+          },
+          id: "description",
+          name: "description",
+          rows: 3,
+          value: bookmark.description if bookmark.description else ""
+        }) }}
+
+        {{ govukInput({
+          label: {
+            text: "Search template (optional)",
+            classes: "govuk-label--m"
+          },
+          hint: {
+            html: 'Use <code>{query}</code> as placeholder. Example: <code>https://google.com/search?q={query}</code>'
+          },
+          id: "searchTemplate",
+          name: "searchTemplate",
+          type: "url",
+          value: bookmark.search_template if bookmark.search_template else ""
+        }) }}
+
+        <div class="govuk-button-group">
+          {{ govukButton({
+            text: "Save changes",
+            type: "submit"
+          }) }}
+
+          <a href="/bookmarks/{{ bookmark.id }}" class="govuk-link">Cancel</a>
+        </div>
+      </form>
+
+      <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+      <p class="govuk-body">
+        <a href="/bookmarks/{{ bookmark.id }}/history" class="govuk-link">View edit history</a>
+      </p>
+    </div>
+  </div>
+{% endblock %}
