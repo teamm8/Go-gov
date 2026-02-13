@@ -1,0 +1,64 @@
+{% extends "layouts/base.njk" %}
+
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-xl">Go link not found</h1>
+
+      <p class="govuk-body-l">
+        The keyword <strong>"{{ keyword }}"</strong> does not exist.
+      </p>
+
+      {% if suggestions.length > 0 %}
+        <h2 class="govuk-heading-m">Did you mean?</h2>
+
+        <ul class="govuk-list">
+          {% for suggestion in suggestions %}
+            <li>
+              <a href="/go/{{ suggestion.keyword | urlencode }}" class="govuk-link govuk-!-font-size-19">
+                <strong>{{ suggestion.keyword }}</strong>
+              </a>
+              {% if suggestion.description %}
+                <br>
+                <span class="govuk-body-s">{{ suggestion.description }}</span>
+              {% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+
+        <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+      {% endif %}
+
+      {% if isAuthenticated %}
+        <h2 class="govuk-heading-m">Create this go link</h2>
+
+        <p class="govuk-body">
+          Would you like to create a go link for "{{ keyword }}"?
+        </p>
+
+        {{ govukButton({
+          text: "Create go link",
+          href: "/bookmarks/new?keyword=" + (keyword | urlencode)
+        }) }}
+      {% else %}
+        {{ govukInsetText({
+          text: "Sign in to create this go link and help build the community knowledge base."
+        }) }}
+
+        {{ govukButton({
+          text: "Sign in",
+          href: "/auth/login"
+        }) }}
+      {% endif %}
+
+      <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+
+      <p class="govuk-body">
+        <a href="/" class="govuk-link">Back to homepage</a>
+      </p>
+    </div>
+  </div>
+{% endblock %}

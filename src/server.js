@@ -13,6 +13,8 @@ const { pool } = require('./config/database');
 // Import routes
 const indexRoutes = require('./routes/index');
 const authRoutes = require('./routes/auth');
+const goRoutes = require('./routes/go');
+const bookmarkRoutes = require('./routes/bookmarks');
 
 // Import passport configuration
 require('./config/passport');
@@ -92,8 +94,10 @@ app.use('/stylesheets', express.static(path.join(__dirname, 'public/stylesheets'
 app.use('/javascripts', express.static(path.join(__dirname, 'public/javascripts')));
 
 // Routes
+app.use('/', goRoutes);
 app.use('/', indexRoutes);
 app.use('/auth', authRoutes);
+app.use('/bookmarks', bookmarkRoutes);
 
 // 404 handler
 app.use((req, res) => {
